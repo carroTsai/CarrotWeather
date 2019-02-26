@@ -1,0 +1,23 @@
+[33mcommit ca68cecc599e9b88db6affd9b8d593e4db52bdb6[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: unknown <carrot@163.com>
+Date:   Tue Feb 26 17:06:06 2019 +0800
+
+    完成遍历省市县三级列表的功能。
+
+[33mcommit fe96d1c1618c995422d8159e5ae678a37a9df864[m
+Author: unknown <carrot@163.com>
+Date:   Mon Feb 25 22:08:58 2019 +0800
+
+    加入创建数据库和表的各项配置。
+
+[33mcommit 7c67080263a46fd2e73f6bdf0d476eec1f4b2722[m
+Author: unknown <carrot@163.com>
+Date:   Mon Feb 25 21:13:06 2019 +0800
+
+    first commit.
+
+[33mcommit 64bcc1c36637d15d6504fe326c858123b71841ea[m
+Author: David <39371255+carroTsai@users.noreply.github.com>
+Date:   Mon Feb 25 16:37:05 2019 +0800
+
+    Initial commit

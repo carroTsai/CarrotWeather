@@ -1,5 +1,6 @@
 package com.carrot.carrotweather.db;
 
+//import org.litepal.crud.LitePalSupport;
 import org.litepal.crud.DataSupport;
 
 public class Province extends DataSupport {

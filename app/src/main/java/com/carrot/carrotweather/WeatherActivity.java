@@ -1,6 +1,8 @@
 package com.carrot.carrotweather;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -55,6 +57,13 @@ public class WeatherActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //安卓5.0以上才支持状态栏沉浸, 先作判断
+        if (Build.VERSION.SDK_INT >= 21) {
+            View decorView= getWindow().getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+
         setContentView(R.layout.activity_weather);
         //初始化各控件
         bingPicImg = findViewById(R.id.bing_pic_img);
@@ -71,7 +80,7 @@ public class WeatherActivity extends AppCompatActivity {
         sportText = findViewById(R.id.sport_text);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
-/*        if (weatherString != null) {
+        if (weatherString != null) {
             //有缓存时直接解析天气数据
             Weather weather = Utility.handleWeatherResponse(weatherString);
             showWeatherInfo(weather);
@@ -80,7 +89,7 @@ public class WeatherActivity extends AppCompatActivity {
             String weatherId = getIntent().getStringExtra("weather_id");
             weatherLayout.setVisibility(View.INVISIBLE);
             requestWeather(weatherId);
-        }*/
+        }
 
         String bingPic = prefs.getString("bing_pic", null);
         if (bingPic != null) {
@@ -90,10 +99,10 @@ public class WeatherActivity extends AppCompatActivity {
         }
 
 
-        /*临时使用*/
+/*        *//*临时测试使用*//*
         String weatherId = getIntent().getStringExtra("weather_id");
         weatherLayout.setVisibility(View.INVISIBLE);
-        requestWeather(weatherId);
+        requestWeather(weatherId);*/
     }
 
     /**

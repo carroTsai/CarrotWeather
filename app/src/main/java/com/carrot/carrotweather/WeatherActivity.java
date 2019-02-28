@@ -1,13 +1,17 @@
 package com.carrot.carrotweather;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +24,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.carrot.carrotweather.gson.Forecast;
 import com.carrot.carrotweather.gson.Weather;
+import com.carrot.carrotweather.service.AutoUpdateService;
 import com.carrot.carrotweather.util.HttpUtil;
 import com.carrot.carrotweather.util.Utility;
 
@@ -31,7 +36,14 @@ import okhttp3.Response;
 
 public class WeatherActivity extends AppCompatActivity {
 
+    private static final String TAG = "WeatherActivity";
+
+    public DrawerLayout drawerLayout;
+
+    private Button navButton;
+
     public SwipeRefreshLayout swipeRefresh;
+
     private String mWeatherId;
 
     private ScrollView weatherLayout;
@@ -84,6 +96,8 @@ public class WeatherActivity extends AppCompatActivity {
         sportText = findViewById(R.id.sport_text);
         swipeRefresh = findViewById(R.id.swipe_refresh);
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
+        drawerLayout = findViewById(R.id.draw_layout);
+        navButton = findViewById(R.id.nav_button);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
@@ -114,7 +128,12 @@ public class WeatherActivity extends AppCompatActivity {
             loadBingPic();
         }
 
-
+        navButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
 /*        *//*临时测试使用*//*
         String weatherId = getIntent().getStringExtra("weather_id");
         weatherLayout.setVisibility(View.INVISIBLE);
@@ -127,7 +146,7 @@ public class WeatherActivity extends AppCompatActivity {
     public void requestWeather(final String weatherId) {
         String weatherUrl = "http://guolin.tech/api/weather?cityid=" + weatherId + "&key=8e1853e5efbe4bb2b63bd1a82f7a0af1";
 
-        Log.d("WeatherActivity", "请求地址: " + weatherUrl);
+        Log.d(TAG, "请求地址: " + weatherUrl);
 
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
@@ -139,7 +158,7 @@ public class WeatherActivity extends AppCompatActivity {
                         Toast.makeText(WeatherActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
                         swipeRefresh.setRefreshing(false);
 
-                        Log.d("WeatherActivity", weatherId + "+fail");
+                        Log.d(TAG, weatherId + "+fail");
                     }
                 });
             }
@@ -161,7 +180,7 @@ public class WeatherActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(WeatherActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
 //                            Log.d("WeatherActivity", "状态码: " + weather.status);
-                            Log.d("WeatherActivity", weatherId + "+success");
+                            Log.d(TAG, weatherId + "+success");
                         }
                         //刷新事件结束
                         swipeRefresh.setRefreshing(false);
@@ -237,5 +256,8 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText.setText(carWash);
         sportText.setText(sport);
         weatherLayout.setVisibility(View.VISIBLE);
+        //激活AutoUpdateService服务
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 }

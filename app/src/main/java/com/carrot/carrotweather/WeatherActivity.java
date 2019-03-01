@@ -27,6 +27,7 @@ import com.carrot.carrotweather.gson.Weather;
 import com.carrot.carrotweather.service.AutoUpdateService;
 import com.carrot.carrotweather.util.HttpUtil;
 import com.carrot.carrotweather.util.Utility;
+import com.carrot.carrotweather.util.LogUtil;
 
 import java.io.IOException;
 
@@ -73,6 +74,8 @@ public class WeatherActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //日志等级
+        LogUtil.level = LogUtil.NOTHING;
         //安卓5.0以上才支持状态栏沉浸, 先作判断
         if (Build.VERSION.SDK_INT >= 21) {
             View decorView= getWindow().getDecorView();
@@ -108,7 +111,8 @@ public class WeatherActivity extends AppCompatActivity {
             showWeatherInfo(weather);
         } else {
             //无缓存时去服务器查询天气
-            mWeatherId = getIntent().getStringExtra("weatherId");
+            mWeatherId = getIntent().getStringExtra("weather_id");
+            LogUtil.d(TAG, "weatherId = " + mWeatherId);
 //            String weatherId = getIntent().getStringExtra("weather_id");
             weatherLayout.setVisibility(View.INVISIBLE);
             requestWeather(mWeatherId);
@@ -146,7 +150,7 @@ public class WeatherActivity extends AppCompatActivity {
     public void requestWeather(final String weatherId) {
         String weatherUrl = "http://guolin.tech/api/weather?cityid=" + weatherId + "&key=8e1853e5efbe4bb2b63bd1a82f7a0af1";
 
-        Log.d(TAG, "请求地址: " + weatherUrl);
+        LogUtil.d(TAG, "请求地址: " + weatherUrl);
 
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
@@ -158,7 +162,7 @@ public class WeatherActivity extends AppCompatActivity {
                         Toast.makeText(WeatherActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
                         swipeRefresh.setRefreshing(false);
 
-                        Log.d(TAG, weatherId + "+fail");
+                        LogUtil.d(TAG, weatherId + "+fail");
                     }
                 });
             }
@@ -171,7 +175,7 @@ public class WeatherActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (weather != null && "ok".equals(weather.status)) {
-                            Log.d("WeatherActivity", "城市码: " + weatherId);
+                            LogUtil.d("WeatherActivity", "城市码: " + weatherId);
                             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this).edit();
                             editor.putString("weather", responseText);
                             editor.apply();
@@ -179,8 +183,8 @@ public class WeatherActivity extends AppCompatActivity {
                             showWeatherInfo(weather);
                         } else {
                             Toast.makeText(WeatherActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
-//                            Log.d("WeatherActivity", "状态码: " + weather.status);
-                            Log.d(TAG, weatherId + "+success");
+                            LogUtil.d("WeatherActivity", "状态码: " + weather.status);
+                            LogUtil.d(TAG, weatherId + "+success");
                         }
                         //刷新事件结束
                         swipeRefresh.setRefreshing(false);

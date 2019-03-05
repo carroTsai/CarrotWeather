@@ -10,6 +10,8 @@ public class AQI {
 
         public String pm25;
 
+        public String qlty;
+
     }
 
 }

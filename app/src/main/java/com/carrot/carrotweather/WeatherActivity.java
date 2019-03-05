@@ -63,6 +63,8 @@ public class WeatherActivity extends AppCompatActivity {
 
     private TextView pm25Text;
 
+    private TextView qltyText;
+
     private TextView comfortText;
 
     private TextView carWashText;
@@ -94,6 +96,7 @@ public class WeatherActivity extends AppCompatActivity {
         forecastLayout = findViewById(R.id.forecast_layout);
         aqiText = findViewById(R.id.aqi_text);
         pm25Text = findViewById(R.id.pm25_text);
+        qltyText = findViewById(R.id.qlty_text);
         comfortText = findViewById(R.id.comfort_text);
         carWashText = findViewById(R.id.car_wash_text);
         sportText = findViewById(R.id.sport_text);
@@ -252,6 +255,8 @@ public class WeatherActivity extends AppCompatActivity {
         if (weather.aqi != null) {
             aqiText.setText(weather.aqi.city.aqi);
             pm25Text.setText(weather.aqi.city.pm25);
+//            String qlty = "空气质量 " + weather.aqi.city.qlty;
+            qltyText.setText(weather.aqi.city.qlty);
         }
         String comfort = "舒适度: " + weather.suggestion.comfort.info;
         String carWash = "洗车指数: " + weather.suggestion.carWash.info;

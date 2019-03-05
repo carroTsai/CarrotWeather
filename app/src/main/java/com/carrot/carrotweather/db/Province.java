@@ -1,9 +1,9 @@
 package com.carrot.carrotweather.db;
 
-import org.litepal.crud.DataSupport;
-//import org.litepal.crud.LitePalSupport;
+//import org.litepal.crud.DataSupport;
+import org.litepal.crud.LitePalSupport;
 
-public class Province extends DataSupport {
+public class Province extends LitePalSupport {
 
     private int id;
 

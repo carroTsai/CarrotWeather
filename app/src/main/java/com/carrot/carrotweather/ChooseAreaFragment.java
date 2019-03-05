@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,10 +37,14 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 
+
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ChooseAreaFragment extends Fragment {
+
+    private static final String TAG = "choosearea";
 
     public static final int LEVEL_PROVINCE = 0;
 
@@ -88,6 +93,8 @@ public class ChooseAreaFragment extends Fragment {
      * 当前选中的级别
      */
     private int currentLevel;
+
+
 
 
 
@@ -143,6 +150,9 @@ public class ChooseAreaFragment extends Fragment {
                 }
             }
         });
+        //Lambda表达式
+//        backButton.setOnClickListener(view -> queryProvinces());
+        Log.d(TAG, "onActivityCreated: 往服务器取省数据");
         queryProvinces();
     }
 
@@ -163,6 +173,7 @@ public class ChooseAreaFragment extends Fragment {
             currentLevel = LEVEL_PROVINCE;
         } else {
             String address = "http://guolin.tech/api/china";
+            Log.d(TAG, "queryProvinces: 接下来查询省数据");
             queryFromServer(address, "province");
         }
     }
@@ -217,14 +228,20 @@ public class ChooseAreaFragment extends Fragment {
      */
     private void queryFromServer(String address, final String type) {
 //        showProgressBar();
+        Log.d(TAG, "address = " + address);
         HttpUtil.sendOkHttpRequest(address, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 //                通过runOnUiThread()方法回到主线程处理逻辑
+                Log.d(TAG, "onFailure: 异常信息1");
+                e.printStackTrace();
+                Log.d(TAG, "onFailure: 异常信息2");
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
 //                        closeProgressBar();
+                        Log.d(TAG, "run: 无法读取省市数据");
+//                        Log.d("choosearea", "address = " + address);
                         Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).show();
                     }
                 });

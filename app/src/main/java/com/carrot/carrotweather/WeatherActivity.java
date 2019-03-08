@@ -28,9 +28,17 @@ import com.carrot.carrotweather.service.AutoUpdateService;
 import com.carrot.carrotweather.util.HttpUtil;
 import com.carrot.carrotweather.util.Utility;
 import com.carrot.carrotweather.util.LogUtil;
+import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.List;
 
+import interfaces.heweather.com.interfacesmodule.bean.Lang;
+import interfaces.heweather.com.interfacesmodule.bean.Unit;
+import interfaces.heweather.com.interfacesmodule.bean.weather.hourly.Hourly;
+import interfaces.heweather.com.interfacesmodule.bean.weather.now.Now;
+import interfaces.heweather.com.interfacesmodule.view.HeConfig;
+import interfaces.heweather.com.interfacesmodule.view.HeWeather;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -76,8 +84,43 @@ public class WeatherActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //日志等级
-        LogUtil.level = LogUtil.VERBOSE;
+
+        //初始化和风天气帐户
+        HeConfig.init("HE1902262213141343", "a2a664b3dc154fbbb48e3233d0d0ee65");
+        HeConfig.switchToFreeServerNode();
+
+        //获取逐小时预报
+        HeWeather.getWeatherHourly(this, "CN101210804", Lang.CHINESE_SIMPLIFIED, Unit.METRIC, new HeWeather.OnResultWeatherHourlyBeanListener() {
+                    @Override
+                    public void onError(Throwable throwable) {
+                        LogUtil.i(TAG, "onError: " + throwable);
+                    }
+
+                    @Override
+                    public void onSuccess(List<Hourly> list) {
+                        LogUtil.i(TAG, "onSuccess: " + new Gson().toJson(list));
+                        String message = new Gson().toJson(list);
+                        LogUtil.i(TAG, "onSuccess: " + message);
+
+                    }
+                });
+
+        //获取实时天气情况
+        HeWeather.getWeatherNow(this, "CN101210804", Lang.CHINESE_SIMPLIFIED, Unit.METRIC, new HeWeather.OnResultWeatherNowBeanListener() {
+            @Override
+            public void onError(Throwable throwable) {
+                LogUtil.i(TAG, "onError: " + throwable);
+            }
+
+            @Override
+            public void onSuccess(List<Now> list) {
+                LogUtil.i(TAG, "onSuccess: " + new Gson().toJson(list));
+            }
+        });
+
+
+                //日志等级
+                LogUtil.level = LogUtil.VERBOSE;
         //安卓5.0以上才支持状态栏沉浸, 先作判断
         if (Build.VERSION.SDK_INT >= 21) {
             View decorView= getWindow().getDecorView();
@@ -173,12 +216,13 @@ public class WeatherActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseText = response.body().string();
+                LogUtil.i(TAG, "onResponse: " + responseText);
                 final Weather weather = Utility.handleWeatherResponse(responseText);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (weather != null && "ok".equals(weather.status)) {
-                            LogUtil.d("WeatherActivity", "城市码: " + weatherId);
+                            LogUtil.i("WeatherActivity", "城市码: " + weatherId);
                             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this).edit();
                             editor.putString("weather", responseText);
                             editor.apply();
@@ -186,8 +230,8 @@ public class WeatherActivity extends AppCompatActivity {
                             showWeatherInfo(weather);
                         } else {
                             Toast.makeText(WeatherActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
-                            LogUtil.d("WeatherActivity", "状态码: " + weather.status);
-                            LogUtil.d(TAG, weatherId + "+success");
+                            LogUtil.i("WeatherActivity", "状态码: " + weather.status);
+                            LogUtil.i(TAG, weatherId + "+success");
                         }
                         //刷新事件结束
                         swipeRefresh.setRefreshing(false);

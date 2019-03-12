@@ -89,6 +89,7 @@ public class WeatherActivity extends AppCompatActivity {
         HeConfig.init("HE1902262213141343", "a2a664b3dc154fbbb48e3233d0d0ee65");
         HeConfig.switchToFreeServerNode();
 
+/*
         //用android SDK获取逐小时预报
         HeWeather.getWeatherHourly(this, "CN101210804", Lang.CHINESE_SIMPLIFIED, Unit.METRIC, new HeWeather.OnResultWeatherHourlyBeanListener() {
                     @Override
@@ -117,6 +118,7 @@ public class WeatherActivity extends AppCompatActivity {
                 LogUtil.i(TAG, "onSuccess: " + new Gson().toJson(list));
             }
         });
+*/
 
 
         //日志等级

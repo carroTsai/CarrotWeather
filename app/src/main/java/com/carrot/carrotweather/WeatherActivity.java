@@ -120,7 +120,7 @@ public class WeatherActivity extends AppCompatActivity {
 
 
         //日志等级
-        LogUtil.level = LogUtil.VERBOSE;
+        LogUtil.level = LogUtil.NOTHING;
         //安卓5.0以上才支持状态栏沉浸, 先作判断
         if (Build.VERSION.SDK_INT >= 21) {
             View decorView= getWindow().getDecorView();
